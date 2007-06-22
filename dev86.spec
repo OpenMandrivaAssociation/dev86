@@ -1,7 +1,7 @@
 Summary:	A real mode 80x86 assembler and linker
 Name:		dev86
 Version:	0.16.17
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	GPL
 Group:		Development/Other
 Url:		http://homepage.ntlworld.com/robert.debath/dev86/
