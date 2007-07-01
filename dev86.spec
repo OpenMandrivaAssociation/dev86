@@ -1,17 +1,18 @@
 Summary:	A real mode 80x86 assembler and linker
 Name:		dev86
 Version:	0.16.17
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	GPL
 Group:		Development/Other
 Url:		http://homepage.ntlworld.com/robert.debath/dev86/
 Source0:	http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.tar.bz2
 Patch5:		dev86-0.16.3-missing-header.patch.bz2
 #Patch6:		dev86-0.16.16-overflow.patch.bz2
+Patch7:		dev86-0.16.17-x86_64-no-elksemu.patch
 Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Obsoletes:	bin86
 Provides:	bin86
-ExclusiveArch:	%{ix86} ppc
+ExclusiveArch:	%{ix86} ppc x86_64
 
 %description
 The dev86 package provides an assembler and linker for real mode 80x86
@@ -46,6 +47,7 @@ a kernel.
 %setup -q
 %patch5 -p1 -b .errno
 #%patch6 -p1 -b .overflow
+%patch7 -p1 -b .x86-64-no-elksemu
 
 mkdir -p lib/bcc
 ln -s ../../include lib/bcc/include
@@ -83,29 +85,31 @@ ln -f bin86/ChangeLog ChangeLog.bin86
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%define bccdir %{_prefix}/lib/bcc
+
 %files
 %defattr(-,root,root)
 %doc README MAGIC Contributors README.bootblocks README.copt README.dis88
 %doc README.elksemu README.unproto README-0.4.bin86 README.bin86 ChangeLog.bin86
-%dir %{_libdir}/bcc
-#%dir %{_libdir}/bcc/i86
-#%dir %{_libdir}/bcc/i386
+%dir %{bccdir}
+#%dir %{bccdir}/i86
+#%dir %{bccdir}/i386
 %{_bindir}/*
-#%{_libdir}/bcc/bcc-cc1
-#%{_libdir}/bcc/copt
-#%{_libdir}/bcc/unproto
-#%{_libdir}/bcc/i86/crt*
-#%{_libdir}/bcc/i386/crt*
-#%{_libdir}/bcc/i86/rules*
-%{_libdir}/bcc/*
+#%{bccdir}/bcc-cc1
+#%{bccdir}/copt
+#%{bccdir}/unproto
+#%{bccdir}/i86/crt*
+#%{bccdir}/i386/crt*
+#%{bccdir}/i86/rules*
+%{bccdir}/*
 #%{_libdir}/liberror.txt
 %{_mandir}/man1/*
-%exclude %{_libdir}/bcc/i386/lib*
+%exclude %{bccdir}/i386/lib*
 
 %files devel
 %defattr(-,root,root)
 %doc README
-%dir %{_libdir}/bcc/include
-%{_libdir}/bcc/include/*
-#%{_libdir}/bcc/i86/lib*
-%{_libdir}/bcc/i386/lib*
+%dir %{bccdir}/include
+%{bccdir}/include/*
+#%{bccdir}/i86/lib*
+%{bccdir}/i386/lib*
