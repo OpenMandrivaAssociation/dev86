@@ -9,6 +9,7 @@ Source0:	http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.ta
 Patch5:		dev86-0.16.3-missing-header.patch.bz2
 #Patch6:		dev86-0.16.16-overflow.patch.bz2
 Patch7:		dev86-0.16.17-x86_64-no-elksemu.patch
+Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Obsoletes:	bin86
 Provides:	bin86
 ExclusiveArch:	%{ix86} ppc x86_64
