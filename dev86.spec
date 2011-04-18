@@ -1,18 +1,21 @@
-Summary:	A real mode 80x86 assembler and linker
+Summary: 	A real mode 80x86 assembler and linker
 Name:		dev86
-Version:	0.16.17
-Release:	%mkrel 8
-License:	GPL
+Version:	0.16.18
+Release:	%mkrel 1
+License: 	GPL
 Group:		Development/Other
-Url:		http://homepage.ntlworld.com/robert.debath/dev86/
-Source0:	http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.tar.bz2
-Patch5:		dev86-0.16.3-missing-header.patch.bz2
-#Patch6:		dev86-0.16.16-overflow.patch.bz2
-Patch7:		dev86-0.16.17-x86_64-no-elksemu.patch
-Buildroot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+URL:		http://homepage.ntlworld.com/robert.debath/
+Source:		http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.tar.gz
+Patch0:		dev86-noelks.patch
+Patch1:		dev86-64bit.patch
+Patch2:		dev86-nostrip.patch
+Patch3:		dev86-overflow.patch
+Patch4:		dev86-long.patch
+Patch5:		dev86-print-overflow.patch
+Buildroot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Obsoletes:	bin86
-Provides:	bin86
-ExclusiveArch:	%{ix86} ppc x86_64
+Provides:       bin86
+ExclusiveArch:  %{ix86} ppc x86_64
 
 %description
 The dev86 package provides an assembler and linker for real mode 80x86
@@ -23,12 +26,12 @@ bootstrapping code, from their sources.
 You should install dev86 if you intend to build programs that run in real
 mode from their source code.
 
-%package	devel
-Summary:	A development files for dev86
-Group:		Development/Other
-Requires:	%{name} = %{version}-%{release}
+%package        devel
+Summary:        A development files for dev86
+Group:          Development/Other
+Requires:       %{name} = %{version}-%{release}
 
-%description	devel
+%description    devel
 The dev86 package provides an assembler and linker for real mode 80x86
 instructions. You'll need to have this package installed in order to
 build programs that run in real mode, including LILO and the kernel's
@@ -45,20 +48,24 @@ a kernel.
 
 %prep
 %setup -q
-%patch5 -p1 -b .errno
-#%patch6 -p1 -b .overflow
-%patch7 -p1 -b .x86-64-no-elksemu
-
-mkdir -p lib/bcc
-ln -s ../../include lib/bcc/include
+%patch0 -p1 -b .noelks
+%patch1 -p1 -b .64bit
+%patch2 -p1 -b .nostrip
+%patch3 -p1 -b .overflow
+%patch4 -p1 -b .long
+%patch5 -p1 -b .print-overflow
 
 %build
+# the main makefile doesn't allow parallel build
 make <<!FooBar!
 5
 quit
 !FooBar!
 
+
 %install
+rm -rf ${RPM_BUILD_ROOT}
+
 rm -rf $RPM_BUILD_ROOT
 
 make DIST=$RPM_BUILD_ROOT MANDIR=%{_mandir} install install-man
@@ -74,7 +81,7 @@ popd
 
 # %doc --parents would be overkill
 for i in elksemu unproto bin86 copt dis88 bootblocks; do
-	ln -f $i/README README.$i
+        ln -f $i/README README.$i
 done
 ln -f bin86/README-0.4 README-0.4.bin86
 ln -f bin86/ChangeLog ChangeLog.bin86
@@ -82,8 +89,9 @@ ln -f bin86/ChangeLog ChangeLog.bin86
 # move header files out of %{_includedir} and into %{_libdir}/bcc/include
 #mv $RPM_BUILD_ROOT%{_includedir} $RPM_BUILD_ROOT%{_libdir}/bcc
 
+
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf ${RPM_BUILD_ROOT}
 
 %define bccdir %{_prefix}/lib/bcc
 
@@ -105,6 +113,7 @@ rm -rf $RPM_BUILD_ROOT
 #%{_libdir}/liberror.txt
 %{_mandir}/man1/*
 %exclude %{bccdir}/i386/lib*
+%exclude %{bccdir}/include
 
 %files devel
 %defattr(-,root,root)
@@ -113,3 +122,5 @@ rm -rf $RPM_BUILD_ROOT
 %{bccdir}/include/*
 #%{bccdir}/i86/lib*
 %{bccdir}/i386/lib*
+
+%changelog
