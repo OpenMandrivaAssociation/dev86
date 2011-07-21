@@ -15,7 +15,7 @@ Patch5:		dev86-print-overflow.patch
 Buildroot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Obsoletes:	bin86
 Provides:       bin86
-ExclusiveArch:  %{ix86} ppc x86_64
+ExclusiveArch:  %{ix86} ppc x86_64 %arm
 
 %description
 The dev86 package provides an assembler and linker for real mode 80x86
