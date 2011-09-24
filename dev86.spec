@@ -1,8 +1,10 @@
+%define		bccdir	%{_libdir}/bcc
+
 Summary: 	A real mode 80x86 assembler and linker
 Name:		dev86
 Version:	0.16.18
-Release:	%mkrel 1
-License: 	GPL
+Release:	%mkrel 2
+License: 	GPLv2
 Group:		Development/Other
 URL:		http://homepage.ntlworld.com/robert.debath/
 Source:		http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.tar.gz
@@ -12,10 +14,11 @@ Patch2:		dev86-nostrip.patch
 Patch3:		dev86-overflow.patch
 Patch4:		dev86-long.patch
 Patch5:		dev86-print-overflow.patch
+Patch6:		dev86-copt.patch
 Buildroot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 Obsoletes:	bin86
 Provides:       bin86
-ExclusiveArch:  %{ix86} ppc x86_64 %arm
+ExclusiveArch:  %{ix86} ppc x86_64 %{arm}
 
 %description
 The dev86 package provides an assembler and linker for real mode 80x86
@@ -49,11 +52,14 @@ a kernel.
 %prep
 %setup -q
 %patch0 -p1 -b .noelks
+%if %_lib == lib64
 %patch1 -p1 -b .64bit
+%endif
 %patch2 -p1 -b .nostrip
 %patch3 -p1 -b .overflow
 %patch4 -p1 -b .long
 %patch5 -p1 -b .print-overflow
+%patch6 -p1 -b .copt
 
 %build
 # the main makefile doesn't allow parallel build
@@ -62,18 +68,12 @@ make <<!FooBar!
 quit
 !FooBar!
 
-
 %install
-rm -rf ${RPM_BUILD_ROOT}
+rm -rf %{buildroot}
 
-rm -rf $RPM_BUILD_ROOT
+make DIST=%{buildroot} MANDIR=%{_mandir} LIBDIR=%{bccdir} INCLDIR=%{bccdir} install install-man
 
-make DIST=$RPM_BUILD_ROOT MANDIR=%{_mandir} install install-man
-
-#install -m755 -s $RPM_BUILD_ROOT/lib/elksemu $RPM_BUILD_ROOT%{_bindir}
-#rm -rf $RPM_BUILD_ROOT/lib/
-
-pushd $RPM_BUILD_ROOT%{_bindir}
+pushd %{buildroot}%{_bindir}
 rm -f nm86 size86
 ln objdump86 nm86
 ln objdump86 size86
@@ -86,31 +86,16 @@ done
 ln -f bin86/README-0.4 README-0.4.bin86
 ln -f bin86/ChangeLog ChangeLog.bin86
 
-# move header files out of %{_includedir} and into %{_libdir}/bcc/include
-#mv $RPM_BUILD_ROOT%{_includedir} $RPM_BUILD_ROOT%{_libdir}/bcc
-
-
 %clean
-rm -rf ${RPM_BUILD_ROOT}
-
-%define bccdir %{_prefix}/lib/bcc
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
 %doc README MAGIC Contributors README.bootblocks README.copt README.dis88
 %doc README.elksemu README.unproto README-0.4.bin86 README.bin86 ChangeLog.bin86
 %dir %{bccdir}
-#%dir %{bccdir}/i86
-#%dir %{bccdir}/i386
 %{_bindir}/*
-#%{bccdir}/bcc-cc1
-#%{bccdir}/copt
-#%{bccdir}/unproto
-#%{bccdir}/i86/crt*
-#%{bccdir}/i386/crt*
-#%{bccdir}/i86/rules*
 %{bccdir}/*
-#%{_libdir}/liberror.txt
 %{_mandir}/man1/*
 %exclude %{bccdir}/i386/lib*
 %exclude %{bccdir}/include
@@ -120,7 +105,5 @@ rm -rf ${RPM_BUILD_ROOT}
 %doc README
 %dir %{bccdir}/include
 %{bccdir}/include/*
-#%{bccdir}/i86/lib*
 %{bccdir}/i386/lib*
 
-%changelog
