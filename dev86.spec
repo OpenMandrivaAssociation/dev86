@@ -3,7 +3,7 @@
 Summary: 	A real mode 80x86 assembler and linker
 Name:		dev86
 Version:	0.16.18
-Release:	3
+Release:	4
 License: 	GPLv2
 Group:		Development/Other
 Url:		http://homepage.ntlworld.com/robert.debath/
