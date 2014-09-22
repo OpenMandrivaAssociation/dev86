@@ -1,0 +1,11 @@
+--- ./unproto/tok_io.c.orig	2014-09-22 15:12:59.140359074 +0100
++++ ./unproto/tok_io.c	2014-09-22 15:13:48.134355465 +0100
+@@ -189,7 +189,7 @@
+ 
+ /* do_control - parse control line */
+ 
+-static int do_control()
++static void do_control()
+ {
+     struct token *t;
+     int     line;

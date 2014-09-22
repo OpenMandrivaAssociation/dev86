@@ -1,20 +1,20 @@
 %define		bccdir	%{_libdir}/bcc
+%define debug_package          %{nil}
 
 Summary: 	A real mode 80x86 assembler and linker
 Name:		dev86
-Version:	0.16.18
-Release:	8
+Version:	0.16.21
+Release:	1
 License: 	GPLv2
 Group:		Development/Other
-Url:		http://homepage.ntlworld.com/robert.debath/
-Source0:	http://homepage.ntlworld.com/robert.debath/dev86/Dev86src-%{version}.tar.gz
+Url:		http://v3.sk/~lkundrak/dev86/
+Source0:	http://v3.sk/~lkundrak/dev86/Dev86src-%{version}.tar.gz
+Source100:	%{name}.rpmlintrc
 Patch0:		dev86-noelks.patch
 Patch1:		dev86-64bit.patch
 Patch2:		dev86-nostrip.patch
-Patch3:		dev86-overflow.patch
 Patch4:		dev86-long.patch
-Patch5:		dev86-print-overflow.patch
-Patch6:		dev86-copt.patch
+Patch5:		dev86-0.16.21-clang.patch
 ExclusiveArch:	%{ix86} ppc x86_64 %{arm}
 Provides:	bin86
 
@@ -45,14 +45,12 @@ a kernel.
 %prep
 %setup -q
 %patch0 -p1 -b .noelks
-%if %_lib == lib64
+%if "%_lib" == "lib64"
 %patch1 -p1 -b .64bit
 %endif
 %patch2 -p1 -b .nostrip
-%patch3 -p1 -b .overflow
 %patch4 -p1 -b .long
-%patch5 -p1 -b .print-overflow
-%patch6 -p1 -b .copt
+%patch5 -p1 -b .clang
 
 %build
 # the main makefile doesn't allow parallel build
