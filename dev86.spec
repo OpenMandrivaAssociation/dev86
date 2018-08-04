@@ -15,7 +15,7 @@ Patch1:		dev86-64bit.patch
 Patch2:		dev86-nostrip.patch
 Patch4:		dev86-long.patch
 Patch5:		dev86-0.16.21-clang.patch
-ExclusiveArch:	%{ix86} ppc x86_64 %{arm}
+ExclusiveArch:	%{ix86} ppc x86_64 znver1 %{arm}
 Provides:	bin86
 
 %description
