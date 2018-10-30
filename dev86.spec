@@ -4,7 +4,7 @@
 Summary: 	A real mode 80x86 assembler and linker
 Name:		dev86
 Version:	0.16.21
-Release:	4
+Release:	5
 License: 	GPLv2
 Group:		Development/Other
 Url:		http://v3.sk/~lkundrak/dev86/
