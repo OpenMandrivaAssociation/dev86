@@ -7,7 +7,7 @@ Version:	0.16.21
 Release:	6
 License: 	GPLv2
 Group:		Development/Other
-Url:		http://v3.sk/~lkundrak/dev86/
+Url:		https://v3.sk/~lkundrak/dev86/
 Source0:	http://v3.sk/~lkundrak/dev86/Dev86src-%{version}.tar.gz
 Source100:	%{name}.rpmlintrc
 Patch0:		dev86-noelks.patch
